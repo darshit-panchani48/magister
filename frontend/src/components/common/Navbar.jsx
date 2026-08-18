@@ -1,4 +1,4 @@
-// src/components/common/Navbar.jsx — Fully Mobile Responsive & Overlap-Free Header (Fixed Spacing)
+// src/components/common/Navbar.jsx — Fully Mobile Responsive & Overlap-Free Header (Balanced Magister Text Size)
 
 import React, { useState, useEffect } from 'react';
 import { useAuth }         from '../../context/AuthContext';
@@ -176,17 +176,17 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
           .nav-subtitle { display: none !important; }
           .btn-label { display: none !important; }
           
-          /* 🌟 Magister text size chota aur button/text ke beech mein proper gap */
-          .nav-main-title { font-size: 10px !important; letter-spacing: 0.3px !important; }
-          .nav-center-section { margin-right: 10px !important; margin-left: 4px !important; flex: 0.8 !important; }
-          .add-member-btn { padding: 4px 6px !important; font-size: 9px !important; }
+          /* 🌟 Magister text size thoda sa badha diya gaya hai taaki balanced dikhe aur button se gap rahe */
+          .nav-main-title { font-size: 13px !important; letter-spacing: 0.6px !important; }
+          .nav-center-section { margin-right: 8px !important; margin-left: 4px !important; flex: 0.9 !important; }
+          .add-member-btn { padding: 4px 7px !important; font-size: 9.5px !important; }
           
           /* Compact gap on mobile screens */
           .nav-right-section { gap: 3px !important; }
         }
 
         @media (max-width: 480px) {
-          .nav-main-title { font-size: 9.5px !important; }
+          .nav-main-title { font-size: 12px !important; }
           .nav-right-section { gap: 2px !important; }
         }
       `}</style>
