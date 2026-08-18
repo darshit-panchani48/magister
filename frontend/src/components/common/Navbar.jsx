@@ -1,4 +1,4 @@
-// src/components/common/Navbar.jsx — Fully Mobile Responsive & Overlap-Free Header (Final Perfect Spacing)
+// src/components/common/Navbar.jsx — Fully Mobile Responsive & Perfect Magister Font Size
 
 import React, { useState, useEffect } from 'react';
 import { useAuth }         from '../../context/AuthContext';
@@ -167,7 +167,7 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
         /* ── Mobile Responsive Adjustments (No Overlapping) ── */
         @media (max-width: 768px) {
           .nav-header-container {
-            padding: 0 8px !important;
+            padding: 0 10px !important;
             height: auto !important;
             padding-top: 8px !important;
             padding-bottom: 8px !important;
@@ -176,9 +176,9 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
           .nav-subtitle { display: none !important; }
           .btn-label { display: none !important; }
           
-          /* 🌟 Balanced sizing and spacing to prevent overlapping */
-          .nav-main-title { font-size: 14px !important; letter-spacing: 0.8px !important; }
-          .nav-center-section { margin-right: 12px !important; margin-left: 6px !important; flex: 1 !important; }
+          /* 🌟 Magister text size increased properly for mobile screens */
+          .nav-main-title { font-size: 15px !important; letter-spacing: 1px !important; }
+          .nav-center-section { margin-right: 10px !important; margin-left: 6px !important; flex: 1 !important; }
           .add-member-btn { padding: 5px 8px !important; font-size: 10px !important; }
           
           /* Compact gap on mobile screens */
@@ -186,7 +186,7 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
         }
 
         @media (max-width: 480px) {
-          .nav-main-title { font-size: 13px !important; }
+          .nav-main-title { font-size: 14.5px !important; }
           .nav-right-section { gap: 3px !important; }
         }
       `}</style>
