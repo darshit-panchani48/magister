@@ -1,4 +1,4 @@
-// src/components/common/Navbar.jsx — Fully Mobile Responsive & Perfect Magister Font Size
+// src/components/common/Navbar.jsx — Fully Mobile Responsive & Maximized Magister Text Size
 
 import React, { useState, useEffect } from 'react';
 import { useAuth }         from '../../context/AuthContext';
@@ -55,17 +55,17 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
         minHeight: 65, background: 'var(--bg-card)',
         borderBottom: '1px solid var(--border)',
         boxShadow: '0 2px 10px rgba(0,0,0,.04)',
-        display: 'flex', alignItems: 'center', padding: '0 16px',
+        display: 'flex', alignItems: 'center', padding: '0 12px',
         justifyContent: 'space-between', width: '100%',
         boxSizing: 'border-box'
       }}>
         
         {/* ── LEFT: Clean Logo & College Info ── */}
-        <div className="nav-left-section" style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+        <div className="nav-left-section" style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
           <div
             style={{
-              width: 38,
-              height: 38,
+              width: 36,
+              height: 36,
               flexShrink: 0,
               display: 'flex',
               alignItems: 'center',
@@ -106,26 +106,26 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
         </div>
 
         {/* ── RIGHT: Actions & Avatar ── */}
-        <div className="nav-right-section" style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end', flexShrink: 0 }}>
+        <div className="nav-right-section" style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end', flexShrink: 0 }}>
 
           {/* Add Member — admin only */}
           {role === 'admin' && (
-            <button className="add-member-btn" onClick={() => typeof onAddMemberClick === 'function' && onAddMemberClick()} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: 'linear-gradient(135deg,#2563eb,#1d4ed8)', color: '#fff', borderRadius: 8, fontSize: 11, fontWeight: 600, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(37,99,235,.25)', transition: 'all 0.2s' }}>
-              <i className="ti ti-user-plus" style={{ fontSize: 13 }} />
+            <button className="add-member-btn" onClick={() => typeof onAddMemberClick === 'function' && onAddMemberClick()} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 10px', background: 'linear-gradient(135deg,#2563eb,#1d4ed8)', color: '#fff', borderRadius: 8, fontSize: 11, fontWeight: 600, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(37,99,235,.25)', transition: 'all 0.2s' }}>
+              <i className="ti ti-user-plus" style={{ fontSize: 12 }} />
               <span className="btn-label">Add Member</span>
             </button>
           )}
 
           {/* Theme Toggle */}
-          <button onClick={toggleTheme} title={isDark ? 'Light Mode' : 'Dark Mode'} style={{ width: 34, height: 20, borderRadius: 10, background: isDark ? '#334155' : '#dbeafe', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
-            <span style={{ position: 'absolute', width: 14, height: 14, borderRadius: '50%', background: isDark ? '#60a5fa' : '#2563eb', top: 3, left: isDark ? 16 : 3, transition: 'left .3s cubic-bezier(.34,1.56,.64,1)', fontSize: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={toggleTheme} title={isDark ? 'Light Mode' : 'Dark Mode'} style={{ width: 32, height: 18, borderRadius: 9, background: isDark ? '#334155' : '#dbeafe', border: 'none', cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
+            <span style={{ position: 'absolute', width: 12, height: 12, borderRadius: '50%', background: isDark ? '#60a5fa' : '#2563eb', top: 3, left: isDark ? 16 : 3, transition: 'left .3s cubic-bezier(.34,1.56,.64,1)', fontSize: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {isDark ? '🌙' : '☀️'}
             </span>
           </button>
 
           {/* Bell Notifications */}
           <div style={{ position: 'relative' }}>
-            <button onClick={() => setShowNotif(true)} style={{ width: 34, height: 34, borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg-page)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, color: 'var(--text-muted)', cursor: 'pointer' }}>
+            <button onClick={() => setShowNotif(true)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg-page)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: 'var(--text-muted)', cursor: 'pointer' }}>
               <i className="ti ti-bell" />
             </button>
             {totalBadge > 0 && (
@@ -136,7 +136,7 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
           </div>
 
           {/* Profile Avatar */}
-          <button onClick={() => typeof onProfileClick === 'function' && onProfileClick()} title="My Profile" style={{ width: 34, height: 34, borderRadius: '50%', background: profilePhoto ? 'transparent' : 'linear-gradient(135deg,#0ea5e9,#2563eb)', border: '2px solid var(--border)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
+          <button onClick={() => typeof onProfileClick === 'function' && onProfileClick()} title="My Profile" style={{ width: 32, height: 32, borderRadius: '50%', background: profilePhoto ? 'transparent' : 'linear-gradient(135deg,#0ea5e9,#2563eb)', border: '2px solid var(--border)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
             {profilePhoto
               ? <img src={profilePhoto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <span>{profileInitials || user?.appId?.charAt(0) || 'U'}</span>
@@ -144,7 +144,7 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
           </button>
 
           {/* Logout Button */}
-          <button onClick={() => setShowLogout(true)} title="Logout" style={{ width: 34, height: 34, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-page)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, color: 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s' }}
+          <button onClick={() => setShowLogout(true)} title="Logout" style={{ width: 32, height: 32, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-page)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s' }}
             onMouseEnter={e => { e.currentTarget.style.background = '#fee2e2'; e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.borderColor = '#fecaca'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-page)'; e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
           >
@@ -164,30 +164,30 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
         .nav-center-section { flex: 1.5; }
         .nav-right-section { flex: 1; }
 
-        /* ── Mobile Responsive Adjustments (No Overlapping) ── */
+        /* ── Mobile Responsive Adjustments (Maximized Magister Size & Zero Wasted Space) ── */
         @media (max-width: 768px) {
           .nav-header-container {
-            padding: 0 10px !important;
+            padding: 0 6px !important;
             height: auto !important;
-            padding-top: 8px !important;
-            padding-bottom: 8px !important;
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
           }
           .nav-college-text { display: none !important; }
           .nav-subtitle { display: none !important; }
           .btn-label { display: none !important; }
           
-          /* 🌟 Magister text size increased properly for mobile screens */
-          .nav-main-title { font-size: 15px !important; letter-spacing: 1px !important; }
-          .nav-center-section { margin-right: 10px !important; margin-left: 6px !important; flex: 1 !important; }
-          .add-member-btn { padding: 5px 8px !important; font-size: 10px !important; }
+          /* 🌟 Left space minimized, Center Magister text maximized to take full available width */
+          .nav-left-section { flex: 0.6 !important; gap: 4px !important; }
+          .nav-center-section { flex: 2 !important; margin: 0 4px !important; }
+          .nav-main-title { font-size: 17.5px !important; letter-spacing: 1.2px !important; }
           
-          /* Compact gap on mobile screens */
-          .nav-right-section { gap: 4px !important; }
+          .add-member-btn { padding: 4px 6px !important; font-size: 9.5px !important; }
+          .nav-right-section { gap: 2.5px !important; flex: 1.2 !important; }
         }
 
         @media (max-width: 480px) {
-          .nav-main-title { font-size: 14.5px !important; }
-          .nav-right-section { gap: 3px !important; }
+          .nav-main-title { font-size: 16.5px !important; letter-spacing: 1px !important; }
+          .nav-right-section { gap: 2px !important; }
         }
       `}</style>
     </>
