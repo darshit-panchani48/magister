@@ -1,4 +1,4 @@
-// src/components/common/Navbar.jsx — Fully Mobile Responsive & Overlap-Free Header
+// src/components/common/Navbar.jsx — Fully Mobile Responsive & Overlap-Free Header (Fixed Spacing)
 
 import React, { useState, useEffect } from 'react';
 import { useAuth }         from '../../context/AuthContext';
@@ -41,7 +41,7 @@ const LogoutConfirmModal = ({ onConfirm, onClose }) => {
 // ── Main Navbar Component ──
 const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileInitials = '' }) => {
   const { user, role, logout }          = useAuth();
-  const { isDark, toggleTheme }         = useTheme();
+  const { isDark, toggleTheme }        = useTheme();
   const { unreadCount, msgUnreadCount } = useNotifications();
   const [showNotif,   setShowNotif]     = useState(false);
   const [showLogout,  setShowLogout]    = useState(false);
@@ -110,7 +110,7 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
 
           {/* Add Member — admin only */}
           {role === 'admin' && (
-            <button onClick={() => typeof onAddMemberClick === 'function' && onAddMemberClick()} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: 'linear-gradient(135deg,#2563eb,#1d4ed8)', color: '#fff', borderRadius: 8, fontSize: 11, fontWeight: 600, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(37,99,235,.25)', transition: 'all 0.2s' }}>
+            <button className="add-member-btn" onClick={() => typeof onAddMemberClick === 'function' && onAddMemberClick()} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: 'linear-gradient(135deg,#2563eb,#1d4ed8)', color: '#fff', borderRadius: 8, fontSize: 11, fontWeight: 600, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(37,99,235,.25)', transition: 'all 0.2s' }}>
               <i className="ti ti-user-plus" style={{ fontSize: 13 }} />
               <span className="btn-label">Add Member</span>
             </button>
@@ -167,7 +167,7 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
         /* ── Mobile Responsive Adjustments (No Overlapping) ── */
         @media (max-width: 768px) {
           .nav-header-container {
-            padding: 0 12px !important;
+            padding: 0 8px !important;
             height: auto !important;
             padding-top: 8px !important;
             padding-bottom: 8px !important;
@@ -175,17 +175,19 @@ const Navbar = ({ onProfileClick, onAddMemberClick, profilePhoto = '', profileIn
           .nav-college-text { display: none !important; }
           .nav-subtitle { display: none !important; }
           .btn-label { display: none !important; }
-          .nav-main-title { fontSize: 15px !important; letter-spacing: 1px !important; }
+          
+          /* 🌟 Magister text size chota aur button/text ke beech mein proper gap */
+          .nav-main-title { font-size: 10px !important; letter-spacing: 0.3px !important; }
+          .nav-center-section { margin-right: 10px !important; margin-left: 4px !important; flex: 0.8 !important; }
+          .add-member-btn { padding: 4px 6px !important; font-size: 9px !important; }
           
           /* Compact gap on mobile screens */
-          .nav-right-section { gap: 5px !important; }
+          .nav-right-section { gap: 3px !important; }
         }
 
         @media (max-width: 480px) {
-          .nav-center-section {
-            align-items: flex-start !important;
-            margin-left: 4px !important;
-          }
+          .nav-main-title { font-size: 9.5px !important; }
+          .nav-right-section { gap: 2px !important; }
         }
       `}</style>
     </>

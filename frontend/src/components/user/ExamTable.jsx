@@ -22,7 +22,7 @@ const SEARCH_FIELDS = [
   { value: 'room',         label: 'Room No.' },
 ];
 
-const ROLE_OPTIONS = ['Superintendent', 'Supervisor', 'Factotum', 'Stationary Supervisor', 'Waterman', 'Lab Assistant', 'Lab Technician', 'Lab Superintendent', 'Electrician', 'Storekeeper', 'Peon', 'Other'];
+const ROLE_OPTIONS = ['Superintendent', 'Supervisor', 'Lab Assistant', 'Lab Superintendent', 'Other'];
 const STATUS_OPTIONS = ['Completed', 'Draft', 'Cancelled'];
 
 /* ── Accurate Hours & Minutes Helpers (Synced with backend/admin) ── */
