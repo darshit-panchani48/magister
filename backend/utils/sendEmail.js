@@ -1,4 +1,4 @@
-// utils/sendEmail.js — Ultimate Gmail Fix with Port 465 & IPv4 for Render
+// utils/sendEmail.js — Strict Port 465 Gmail Configuration
 const nodemailer = require('nodemailer');
 
 const sendEmail = async ({ to, subject, html, text }) => {
@@ -7,12 +7,11 @@ const sendEmail = async ({ to, subject, html, text }) => {
     return;
   }
 
-  // 🌟 यहाँ पोर्ट 465 और secure: true का उपयोग किया गया है जो रेंडर पर कभी ब्लॉक नहीं होता
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
-    secure: true, // true for 465, false for 587
-    family: 4,    // Render पर IPv6 की समस्या को खत्म करने के लिए
+    secure: true, // Port 465 के लिए true होना अनिवार्य है
+    family: 4,    // Render पर IPv6 की समस्या रोकने के लिए
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -32,10 +31,10 @@ const sendEmail = async ({ to, subject, html, text }) => {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent successfully to Gmail:', info.messageId);
+    console.log('✅ Gmail SMTP Success:', info.messageId);
     return info;
   } catch (error) {
-    console.error('❌ Email send failed:', error.message);
+    console.error('❌ Gmail SMTP Failed:', error.message);
   }
 };
 
