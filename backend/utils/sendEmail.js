@@ -1,4 +1,4 @@
-// utils/sendEmail.js — Updated with Timeout Handling
+// utils/sendEmail.js — Timeout increased to 60 seconds
 const nodemailer = require('nodemailer');
 
 const sendEmail = async ({ to, subject, html, text }) => {
@@ -13,10 +13,10 @@ const sendEmail = async ({ to, subject, html, text }) => {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    // 🌟 यहाँ टाइमआउट बढ़ा दें ताकि Render के स्लो नेटवर्क पर कनेक्शन न टूटे
-    connectionTimeout: 20000, // 20 seconds
-    greetingTimeout: 20000,
-    socketTimeout: 20000,
+    // 🌟 यहाँ टाइमआउट बढ़ाकर 60 सेकंड कर दिया गया है
+    connectionTimeout: 60000, 
+    greetingTimeout: 60000,
+    socketTimeout: 60000,
   });
 
   const mailOptions = {
@@ -33,7 +33,6 @@ const sendEmail = async ({ to, subject, html, text }) => {
     return info;
   } catch (error) {
     console.error('❌ Email send failed:', error.message);
-    // non-critical है इसलिए एरर को आगे थ्रो (throw) नहीं किया जा रहा ताकि ऐप क्रैश न हो
   }
 };
 
