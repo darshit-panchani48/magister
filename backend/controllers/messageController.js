@@ -1,4 +1,4 @@
-// controllers/messageController.js — Complete with Background Email & Non-blocking API
+// controllers/messageController.js — Complete with Separate Email and App-Only Endpoints
 
 const Message = require('../models/Message');
 const User = require('../models/User');

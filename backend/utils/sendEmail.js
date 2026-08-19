@@ -1,4 +1,4 @@
-// utils/sendEmail.js — Strict Port 465 Gmail Configuration
+// utils/sendEmail.js — Timeout increased to 60 seconds
 const nodemailer = require('nodemailer');
 
 const sendEmail = async ({ to, subject, html, text }) => {
@@ -8,15 +8,13 @@ const sendEmail = async ({ to, subject, html, text }) => {
   }
 
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Port 465 के लिए true होना अनिवार्य है
-    family: 4,    // Render पर IPv6 की समस्या रोकने के लिए
+    service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    connectionTimeout: 60000,
+    // 🌟 यहाँ टाइमआउट बढ़ाकर 60 सेकंड कर दिया गया है
+    connectionTimeout: 60000, 
     greetingTimeout: 60000,
     socketTimeout: 60000,
   });
@@ -31,10 +29,10 @@ const sendEmail = async ({ to, subject, html, text }) => {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Gmail SMTP Success:', info.messageId);
+    console.log('✅ Email sent:', info.messageId);
     return info;
   } catch (error) {
-    console.error('❌ Gmail SMTP Failed:', error.message);
+    console.error('❌ Email send failed:', error.message);
   }
 };
 
