@@ -5,31 +5,31 @@ const mongoose = require('mongoose');
 const messageSchema = new mongoose.Schema(
   {
     from: {
-      type:     mongoose.Schema.Types.ObjectId,
-      ref:      'Admin',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Admin',
       required: true,
     },
     to: {
-      type:     mongoose.Schema.Types.ObjectId,
-      ref:      'User',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     subject: {
-      type:    String,
-      trim:    true,
-      default: 'Message from Admin',
+      type: String,
+      required: true,
+      trim: true,
     },
     message: {
-      type:     String,
-      required: [true, 'Message content is required'],
-      trim:     true,
+      type: String,
+      required: true,
+      trim: true,
     },
     relatedRecord: {
       type: mongoose.Schema.Types.ObjectId,
-      ref:  'ExamRecord',
+      ref: 'ExamRecord',
     },
     isRead: {
-      type:    Boolean,
+      type: Boolean,
       default: false,
     },
     readAt: {
@@ -38,8 +38,5 @@ const messageSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-messageSchema.index({ to: 1, isRead: 1 });
-messageSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Message', messageSchema);

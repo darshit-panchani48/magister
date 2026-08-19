@@ -1,4 +1,4 @@
-// utils/sendEmail.js — Timeout increased to 60 seconds
+// utils/sendEmail.js — Timeout configured to 60 seconds for Render deployment
 const nodemailer = require('nodemailer');
 
 const sendEmail = async ({ to, subject, html, text }) => {
@@ -13,7 +13,6 @@ const sendEmail = async ({ to, subject, html, text }) => {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    // 🌟 यहाँ टाइमआउट बढ़ाकर 60 सेकंड कर दिया गया है
     connectionTimeout: 60000, 
     greetingTimeout: 60000,
     socketTimeout: 60000,
