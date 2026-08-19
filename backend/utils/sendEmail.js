@@ -8,13 +8,15 @@ const sendEmail = async ({ to, subject, html, text }) => {
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    service: 'smtp.gmail.com',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS, // Use Gmail App Password (not account password)
-    },
-  });
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
   const mailOptions = {
     from:    `"Magister — ASSC" <${process.env.EMAIL_USER}>`,
