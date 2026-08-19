@@ -1,32 +1,31 @@
+// utils/sendEmail.js — Nodemailer Gmail SMTP
+
 const nodemailer = require('nodemailer');
 
 const sendEmail = async ({ to, subject, html, text }) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    throw new Error('EMAIL_USER or EMAIL_PASS is missing');
+    console.warn('⚠️  EMAIL_USER or EMAIL_PASS not set — skipping email');
+    return;
   }
 
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      pass: process.env.EMAIL_PASS, // Use Gmail App Password (not account password)
     },
   });
 
-  await transporter.verify();
-
-  const info = await transporter.sendMail({
-    from: `"Magister — ASSC" <${process.env.EMAIL_USER}>`,
+  const mailOptions = {
+    from:    `"Magister — ASSC" <${process.env.EMAIL_USER}>`,
     to,
     subject,
-    html: html || `<p>${text || subject}</p>`,
-    text: text || subject,
-  });
+    html:    html || `<p>${text}</p>`,
+    text:    text || subject,
+  };
 
-  console.log('✅ EMAIL SENT:', info.messageId);
-
+  const info = await transporter.sendMail(mailOptions);
+  console.log('✅ Email sent:', info.messageId);
   return info;
 };
 

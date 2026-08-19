@@ -1,37 +1,25 @@
-// controllers/messageController.js — Complete
+// controllers/messageController.js — Complete with Separate Email and App-Only Endpoints
 
 const Message = require('../models/Message');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
-const Profile = require('../models/Profile');
 const sendEmail = require('../utils/sendEmail');
 
-// ============================================================
-// 1. Send Message WITH Email
-// ============================================================
+// 1. Send Message WITH Email (For Profile Big Button)
 const sendMessage = async (req, res, next) => {
   try {
     const { to, message, subject, relatedRecord } = req.body;
 
     if (!to || !message) {
-      return res.status(400).json({
-        success: false,
-        message: 'Recipient and message are required',
-      });
+      return res.status(400).json({ success: false, message: 'Recipient and message are required' });
     }
 
     const user = await User.findById(to);
-
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // ----------------------------------------------------------
     // Save Message
-    // ----------------------------------------------------------
     const newMessage = await Message.create({
       from: req.userId,
       to,
@@ -40,9 +28,7 @@ const sendMessage = async (req, res, next) => {
       relatedRecord: relatedRecord || undefined,
     });
 
-    // ----------------------------------------------------------
     // Create Notification
-    // ----------------------------------------------------------
     await Notification.create({
       recipient: to,
       recipientModel: 'User',
@@ -53,172 +39,49 @@ const sendMessage = async (req, res, next) => {
       triggeredByModel: 'Admin',
     });
 
-    // ----------------------------------------------------------
-    // Get User Email
-    // ----------------------------------------------------------
+    // Send Gmail Notification
     let userEmail = null;
-
     try {
-      const profile = await Profile.findOne({ user: to });
-      userEmail = profile?.email?.trim() || null;
-    } catch (profileError) {
-      console.error('❌ Profile email lookup failed:', profileError);
-    }
+      const profile = await require('../models/Profile').findOne({ user: to });
+      userEmail = profile?.email || null;
+    } catch (e) {}
 
-    // ----------------------------------------------------------
-    // Send Email
-    // ----------------------------------------------------------
-    if (!userEmail) {
-      console.warn('⚠️ No email found for user:', to);
-    } else {
+    if (userEmail) {
       try {
         await sendEmail({
           to: userEmail,
-
-          subject:
-            subject || 'New Message from Admin — Magister',
-
+          subject: subject || 'New Message from Admin — Magister',
           html: `
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px">
-
-              <div style="
-                background:#2563eb;
-                padding:20px;
-                border-radius:8px 8px 0 0;
-                text-align:center;
-              ">
-                <h1 style="
-                  color:#fff;
-                  margin:0;
-                  font-style:italic;
-                ">
-                  Magister
-                </h1>
-
-                <p style="
-                  color:#bfdbfe;
-                  margin:4px 0 0;
-                  font-size:12px;
-                ">
-                  Exam Remuneration Management System
-                </p>
+              <div style="background:#2563eb;padding:20px;border-radius:8px 8px 0 0;text-align:center">
+                <h1 style="color:#fff;margin:0;font-style:italic">Magister</h1>
+                <p style="color:#bfdbfe;margin:4px 0 0;font-size:12px">Exam Remuneration Management System</p>
               </div>
-
-              <div style="
-                background:#fff;
-                border:1px solid #e5e7eb;
-                border-top:none;
-                padding:24px;
-                border-radius:0 0 8px 8px;
-              ">
-
-                <p style="
-                  color:#374151;
-                  font-size:14px;
-                  margin:0 0 8px;
-                ">
-                  Hello,
-                </p>
-
-                <p style="
-                  color:#374151;
-                  font-size:14px;
-                  margin:0 0 16px;
-                ">
-                  You have received a new message from Admin:
-                </p>
-
-                <div style="
-                  background:#f3f4f6;
-                  border-left:3px solid #2563eb;
-                  padding:14px 16px;
-                  border-radius:0 6px 6px 0;
-                  margin-bottom:20px;
-                ">
-
-                  <strong style="
-                    color:#111827;
-                    font-size:13px;
-                  ">
-                    ${subject || 'Message from Admin'}
-                  </strong>
-
-                  <p style="
-                    color:#374151;
-                    font-size:13px;
-                    margin:8px 0 0;
-                    line-height:1.6;
-                  ">
-                    ${message}
-                  </p>
-
+              <div style="background:#fff;border:1px solid #e5e7eb;border-top:none;padding:24px;border-radius:0 0 8px 8px">
+                <p style="color:#374151;font-size:14px;margin:0 0 8px">Hello,</p>
+                <p style="color:#374151;font-size:14px;margin:0 0 16px">You have received a new message from Admin:</p>
+                <div style="background:#f3f4f6;border-left:3px solid #2563eb;padding:14px 16px;border-radius:0 6px 6px 0;margin-bottom:20px">
+                  <strong style="color:#111827;font-size:13px">${subject || 'Message from Admin'}</strong>
+                  <p style="color:#374151;font-size:13px;margin:8px 0 0;line-height:1.6">${message}</p>
                 </div>
-
-                <p style="
-                  color:#6b7280;
-                  font-size:12px;
-                  margin:0;
-                ">
-                  Please login to Magister to view and reply.
-                </p>
-
+                <p style="color:#6b7280;font-size:12px;margin:0">Please login to Magister to view and reply.</p>
               </div>
-
-              <p style="
-                color:#9ca3af;
-                font-size:11px;
-                text-align:center;
-                margin-top:12px;
-              ">
+              <p style="color:#9ca3af;font-size:11px;text-align:center;margin-top:12px">
                 ASSC · Atmanand Saraswati Science College, Surat
               </p>
-
             </div>
           `,
-
-          text: `
-You have received a new message from Admin.
-
-${subject || 'Message from Admin'}
-
-${message}
-
-Please login to Magister to view and reply.
-          `,
         });
-
-        console.log(`✅ Email successfully sent to: ${userEmail}`);
-      } catch (emailError) {
-        // IMPORTANT:
-        // Show complete error in Render logs
-        console.error('❌ EMAIL ERROR:', emailError);
-
-        return res.status(500).json({
-          success: false,
-          message: 'Message saved, but email could not be sent.',
-          error:
-            process.env.NODE_ENV === 'production'
-              ? 'Email service failed'
-              : emailError.message,
-        });
+      } catch (emailErr) {
+        console.error('Email send failed (non-critical):', emailErr.message);
       }
     }
 
-    // ----------------------------------------------------------
-    // Mark unread notification
-    // ----------------------------------------------------------
-    await User.findByIdAndUpdate(to, {
-      hasUnreadNotifications: true,
-    });
+    await User.findByIdAndUpdate(to, { hasUnreadNotifications: true });
 
-    // ----------------------------------------------------------
-    // Success
-    // ----------------------------------------------------------
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
-      message: userEmail
-        ? 'Message & Email sent successfully'
-        : 'Message sent successfully, but user has no email address',
+      message: 'Message & Email sent successfully',
       data: newMessage,
     });
   } catch (error) {
@@ -226,31 +89,21 @@ Please login to Magister to view and reply.
   }
 };
 
-
-// ============================================================
-// 2. Send In-App Notification ONLY
-// ============================================================
+// 2. Send In-App Notification ONLY - NO EMAIL (For Table Row Small Icons)
 const sendAppMessageOnly = async (req, res, next) => {
   try {
     const { to, message, subject, relatedRecord } = req.body;
 
     if (!to || !message) {
-      return res.status(400).json({
-        success: false,
-        message: 'Recipient and message are required',
-      });
+      return res.status(400).json({ success: false, message: 'Recipient and message are required' });
     }
 
     const user = await User.findById(to);
-
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Save Message
+    // Save Message (NO EMAIL TRIGGERED)
     const newMessage = await Message.create({
       from: req.userId,
       to,
@@ -259,7 +112,7 @@ const sendAppMessageOnly = async (req, res, next) => {
       relatedRecord: relatedRecord || undefined,
     });
 
-    // Notification only
+    // Create Notification Only
     await Notification.create({
       recipient: to,
       recipientModel: 'User',
@@ -270,11 +123,9 @@ const sendAppMessageOnly = async (req, res, next) => {
       triggeredByModel: 'Admin',
     });
 
-    await User.findByIdAndUpdate(to, {
-      hasUnreadNotifications: true,
-    });
+    await User.findByIdAndUpdate(to, { hasUnreadNotifications: true });
 
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
       message: 'In-App notification sent successfully',
       data: newMessage,
@@ -284,15 +135,10 @@ const sendAppMessageOnly = async (req, res, next) => {
   }
 };
 
-
-// ============================================================
-// 3. Get My Messages
-// ============================================================
+// GET /api/messages — User gets their messages
 const getMyMessages = async (req, res, next) => {
   try {
-    const messages = await Message.find({
-      to: req.userId,
-    })
+    const messages = await Message.find({ to: req.userId })
       .populate('from', 'appId name')
       .populate('relatedRecord', 'university examCategory date')
       .sort({ createdAt: -1 });
@@ -302,80 +148,45 @@ const getMyMessages = async (req, res, next) => {
       isRead: false,
     });
 
-    return res.status(200).json({
-      success: true,
-      count: messages.length,
-      unreadCount,
-      messages,
-    });
+    res.status(200).json({ success: true, count: messages.length, unreadCount, messages });
   } catch (error) {
     next(error);
   }
 };
 
-
-// ============================================================
-// 4. Mark Message Read
-// ============================================================
+// PUT /api/messages/:id/read
 const markMessageRead = async (req, res, next) => {
   try {
     const msg = await Message.findOneAndUpdate(
-      {
-        _id: req.params.id,
-        to: req.userId,
-      },
-      {
-        isRead: true,
-        readAt: new Date(),
-      },
-      {
-        new: true,
-      }
+      { _id: req.params.id, to: req.userId },
+      { isRead: true, readAt: new Date() },
+      { new: true }
     );
 
     if (!msg) {
-      return res.status(404).json({
-        success: false,
-        message: 'Message not found',
-      });
+      return res.status(404).json({ success: false, message: 'Message not found' });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: msg,
-    });
+    res.status(200).json({ success: true, message: msg });
   } catch (error) {
     next(error);
   }
 };
 
-
-// ============================================================
-// 5. Get Sent Messages
-// ============================================================
+// GET /api/messages/sent — Admin sees sent messages
 const getSentMessages = async (req, res, next) => {
   try {
-    const messages = await Message.find({
-      from: req.userId,
-    })
+    const messages = await Message.find({ from: req.userId })
       .populate('to', 'appId')
       .populate('relatedRecord', 'university examCategory')
       .sort({ createdAt: -1 });
 
-    return res.status(200).json({
-      success: true,
-      count: messages.length,
-      messages,
-    });
+    res.status(200).json({ success: true, count: messages.length, messages });
   } catch (error) {
     next(error);
   }
 };
 
-
-// ============================================================
-// Export
-// ============================================================
 module.exports = {
   sendMessage,
   sendAppMessageOnly,
