@@ -4,7 +4,7 @@
   "description": "Magister - Exam Remuneration Management System Backend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm start",
     "dev": "nodemon server.js",
     "seed": "node utils/seedAdmin.js"
   },
