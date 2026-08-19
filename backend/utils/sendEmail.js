@@ -9,7 +9,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
   }
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: 'smtp.gmail.com',
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS, // Use Gmail App Password (not account password)
