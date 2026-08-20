@@ -1,4 +1,4 @@
-// src/pages/LoginPage.jsx — Mobile Responsive Login Page with Ambient Glow
+// src/pages/LoginPage.jsx — Mobile Responsive Login Page with Ambient Glow (Force Light Theme)
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showForgot, setShowForgot] = useState(false);
+
+  // Force Remove Dark Mode on Login Page
+  useEffect(() => {
+    document.documentElement.classList.remove('dark');
+    document.body.classList.remove('dark');
+  }, []);
 
   // If already authenticated in this tab, redirect correctly
   useEffect(() => {
@@ -83,11 +89,12 @@ export default function LoginPage() {
           backgroundAttachment: 'fixed',
         }}
       >
-        {/* ── Login Card (No Border, Extra Light Glow Ambient Shadow) ── */}
+        {/* ── Login Card (Fixed Light Mode White Background & Dark Text) ── */}
         <div
           className="login-card"
           style={{
             background: '#ffffff',
+            color: '#0f172a',
             borderRadius: '32px',
             padding: '36px 28px',
             width: '100%',
@@ -98,7 +105,6 @@ export default function LoginPage() {
             position: 'relative',
             zIndex: 5,
             margin: 'auto',
-            /* Enhanced Light Glow & Ambient Drop Shadows */
             boxShadow: `
               0 20px 50px -10px rgba(0, 0, 0, 0.25),
               0 0 40px 12px rgba(250, 204, 21, 0.35),
@@ -211,16 +217,15 @@ export default function LoginPage() {
                 style={{
                   width: '100%',
                   padding: '11px 14px 11px 42px',
-                  border: 'none',
+                  border: '1px solid #cbd5e1',
                   borderRadius: '12px',
                   fontSize: 13,
-                  background: '#f1f5f9',
+                  background: '#ffffff',
                   color: '#0f172a',
                   fontFamily: "'Inter', sans-serif",
                   outline: 'none',
                   boxSizing: 'border-box',
                   transition: 'all 0.2s ease',
-                  boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.04)',
                 }}
               />
             </div>
@@ -254,16 +259,15 @@ export default function LoginPage() {
                 style={{
                   width: '100%',
                   padding: '11px 42px 11px 42px',
-                  border: 'none',
+                  border: '1px solid #cbd5e1',
                   borderRadius: '12px',
                   fontSize: 13,
-                  background: '#f1f5f9',
+                  background: '#ffffff',
                   color: '#0f172a',
                   fontFamily: "'Inter', sans-serif",
                   outline: 'none',
                   boxSizing: 'border-box',
                   transition: 'all 0.2s ease',
-                  boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.04)',
                 }}
               />
               <button
@@ -419,6 +423,8 @@ export default function LoginPage() {
         
         input:focus {
           background: #ffffff !important;
+          color: #0f172a !important;
+          border-color: #2563eb !important;
           box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
         }
 
