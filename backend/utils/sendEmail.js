@@ -1,4 +1,5 @@
-// utils/sendEmail.js — Timeout increased to 60 seconds
+// utils/sendEmail.js — Nodemailer Gmail SMTP
+
 const nodemailer = require('nodemailer');
 
 const sendEmail = async ({ to, subject, html, text }) => {
@@ -11,12 +12,8 @@ const sendEmail = async ({ to, subject, html, text }) => {
     service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      pass: process.env.EMAIL_PASS, // Use Gmail App Password (not account password)
     },
-    // 🌟 यहाँ टाइमआउट बढ़ाकर 60 सेकंड कर दिया गया है
-    connectionTimeout: 60000, 
-    greetingTimeout: 60000,
-    socketTimeout: 60000,
   });
 
   const mailOptions = {
@@ -27,13 +24,9 @@ const sendEmail = async ({ to, subject, html, text }) => {
     text:    text || subject,
   };
 
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent:', info.messageId);
-    return info;
-  } catch (error) {
-    console.error('❌ Email send failed:', error.message);
-  }
+  const info = await transporter.sendMail(mailOptions);
+  console.log('✅ Email sent:', info.messageId);
+  return info;
 };
 
 module.exports = sendEmail;
