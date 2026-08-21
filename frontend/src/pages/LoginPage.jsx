@@ -144,7 +144,7 @@ export default function LoginPage() {
               style={{
                 fontSize: 25,
                 fontWeight: 800,
-                color: '#0f172a',
+                color: '#06b6d4',
                 fontFamily: "'Playfair Display', 'Georgia', serif",
                 fontStyle: 'italic',
                 marginBottom: 2,
@@ -303,7 +303,7 @@ export default function LoginPage() {
                 border: 'none',
                 cursor: 'pointer',
                 fontSize: 11.5,
-                color: '#64748b',
+                color: '#06b6d4',
                 fontWeight: 500,
               }}
             >
