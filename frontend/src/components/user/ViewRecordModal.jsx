@@ -159,11 +159,12 @@ export default function ViewRecordModal({ record, onClose }) {
 
               <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: 14, padding: '18px 22px' }}>
                 <SH color="var(--primary)" label="Exam Information" icon="ti-book" />
-                <div className="vrm-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 20px' }}>
+                <div className="vrm-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 20px' }}>
                   <Field label="Exam Name" value={record.labDuty.examName} />
                   <Field label="Subject"   value={record.labDuty.subject} />
                   <Field label="Semester"  value={record.labDuty.semester} />
                   <Field label="Exam Type" value={record.labDuty.examType} />
+                  <Field label="Year"      value={record.labDuty?.year || record.year || (record.examDetails?.[0]?.year) || '—'} color="var(--primary)" />
                 </div>
               </div>
 
@@ -192,8 +193,8 @@ export default function ViewRecordModal({ record, onClose }) {
               <div className="vrm-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div style={{ background: 'var(--pro-light)', border: '1px solid var(--pro-border)', borderRadius: 14, padding: '18px 22px' }}>
                   <SH color="var(--pro)" label="Duty Timing" icon="ti-clock" />
-                  <Field label="Start Time"       value={fmtTime(record.generalDuty.startTime)} />
-                  <Field label="End Time"         value={fmtTime(record.generalDuty.endTime)} />
+                  <Field label="Start Time"        value={fmtTime(record.generalDuty.startTime)} />
+                  <Field label="End Time"          value={fmtTime(record.generalDuty.endTime)} />
                   <Field label="Total Duty Hours" value={record.generalDuty.totalDutyHours} color="var(--pro)" />
                 </div>
                 <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: 14, padding: '18px 22px' }}>

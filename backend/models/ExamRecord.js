@@ -22,6 +22,7 @@ const examDetailSchema = new mongoose.Schema({
 }, { _id: false });
 
 const labDutySchema = new mongoose.Schema({
+  year:             { type: String, enum: ['FY','SY','TY','HONOURS'], default: 'FY' },
   labName:          { type: String, trim: true, default: '' },
   floor:            { type: String, trim: true, default: '' },
   labNumber:        { type: String, trim: true, default: '' },

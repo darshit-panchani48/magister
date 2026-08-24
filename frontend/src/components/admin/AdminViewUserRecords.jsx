@@ -1,10 +1,10 @@
-// src/components/admin/AdminViewUserRecords.jsx — Updated with Auto-Calculated Hours Column
+// src/components/admin/AdminViewUserRecords.jsx — Updated with Auto-Calculated Hours Column & General/Lab Duty Room Search Support
 
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import adminService    from '../../services/adminService';
-import useDebounce      from '../../hooks/useDebounce';
+import useDebounce     from '../../hooks/useDebounce';
 import ViewRecordModal  from '../user/ViewRecordModal';
 import MessageModal     from './MessageModal';
 import AdminDeleteModal from './AdminDeleteModal';
@@ -116,7 +116,7 @@ const calcRecordMins = (record) => {
 };
 
 export default function AdminViewUserRecords({ userId, onBack, activeFilters = {} }) {
-  const [data,         setData]         = useState(null);
+  const [data,        setData]        = useState(null);
   const [allRecords,   setAllRecords]   = useState([]);
   const [records,      setRecords]      = useState([]);
   const [totalHoursStr,setTotalHoursStr]= useState('0h');
@@ -169,21 +169,32 @@ export default function AdminViewUserRecords({ userId, onBack, activeFilters = {
 
     if (s) {
       filtered = filtered.filter(r => {
+        const stdRoom = r.room?.toLowerCase() || '';
+        const labRoom = r.labDuty?.labName?.toLowerCase() || r.labDuty?.labNumber?.toLowerCase() || '';
+        const genLoc = r.generalDuty?.location?.toLowerCase() || '';
+        const genLocs = Array.isArray(r.generalDuty?.locations) ? r.generalDuty.locations.join(' ').toLowerCase() : '';
+        const genOther = r.generalDuty?.otherLocation?.toLowerCase() || '';
+
         if (searchField === 'university')   return r.university?.toLowerCase().includes(s);
         if (searchField === 'department')   return r.department?.toLowerCase().includes(s);
         if (searchField === 'examCategory') return r.examCategory?.toLowerCase().includes(s);
         if (searchField === 'role')         return r.role?.toLowerCase().includes(s);
         if (searchField === 'block')        return r.block?.toLowerCase().includes(s);
-        if (searchField === 'room')         return r.room?.toLowerCase().includes(s);
-        if (searchField === 'examName')     return r.examDetails?.some(d => d.examName?.toLowerCase().includes(s));
-        if (searchField === 'subject')      return r.examDetails?.some(d => d.subject?.toLowerCase().includes(s));
+        if (searchField === 'room')         return stdRoom.includes(s) || labRoom.includes(s) || genLoc.includes(s) || genLocs.includes(s) || genOther.includes(s);
+        if (searchField === 'examName')     return r.examDetails?.some(d => d.examName?.toLowerCase().includes(s)) || r.labDuty?.examName?.toLowerCase().includes(s);
+        if (searchField === 'subject')      return r.examDetails?.some(d => d.subject?.toLowerCase().includes(s)) || r.labDuty?.subject?.toLowerCase().includes(s);
+        
         return (
           r.university?.toLowerCase().includes(s)   ||
           r.department?.toLowerCase().includes(s)   ||
           r.examCategory?.toLowerCase().includes(s) ||
           r.role?.toLowerCase().includes(s)         ||
           r.block?.toLowerCase().includes(s)        ||
-          r.room?.toLowerCase().includes(s)         ||
+          stdRoom.includes(s)                       ||
+          labRoom.includes(s)                       ||
+          genLoc.includes(s)                        ||
+          genLocs.includes(s)                       ||
+          genOther.includes(s)                      ||
           r.examDetails?.some(d => d.examName?.toLowerCase().includes(s) || d.subject?.toLowerCase().includes(s))
         );
       });
@@ -260,10 +271,10 @@ export default function AdminViewUserRecords({ userId, onBack, activeFilters = {
           )}
           <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
             {[
-              { label:`${records.length} Shown`,                 bg:'var(--primary-light)', color:'var(--primary-text)' },
-              { label:`${allRecords.length} Total`,              bg:'var(--pro-light)', color:'var(--pro-text)' },
-              { label:`${totalHoursStr} Completed`,              bg:'var(--success-light)', color:'var(--success-text)' },
-              { label:user.isActive?'Active':'Inactive',           bg:user.isActive?'var(--success-light)':'var(--bg-hover)', color:user.isActive?'var(--success-text)':'var(--text-muted)' },
+              { label:`${records.length} Shown`,             bg:'var(--primary-light)', color:'var(--primary-text)' },
+              { label:`${allRecords.length} Total`,         bg:'var(--pro-light)', color:'var(--pro-text)' },
+              { label:`${totalHoursStr} Completed`,         bg:'var(--success-light)', color:'var(--success-text)' },
+              { label:user.isActive?'Active':'Inactive',          bg:user.isActive?'var(--success-light)':'var(--bg-hover)', color:user.isActive?'var(--success-text)':'var(--text-muted)' },
             ].map(p=>(
               <span key={p.label} style={{ background:p.bg, color:p.color, fontSize:11, fontWeight:600, padding:'3px 12px', borderRadius:20 }}>{p.label}</span>
             ))}
@@ -325,7 +336,7 @@ export default function AdminViewUserRecords({ userId, onBack, activeFilters = {
         {hasFilters && (
           <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:10 }}>
             {hasCarryFilter && <span className="badge badge-yellow"><i className="ti ti-filter" style={{ fontSize:10 }}/> Dept: {activeFilters.deptFilter}</span>}
-            {search       && <span className="badge badge-blue"><i className="ti ti-search" style={{ fontSize:10 }}/>{search}</span>}
+            {search      && <span className="badge badge-blue"><i className="ti ti-search" style={{ fontSize:10 }}/>{search}</span>}
             {roleFilter   && <span className="badge badge-purple">Role: {roleFilter}</span>}
             {statusFilter && <span className="badge badge-green">Status: {statusFilter}</span>}
             {dateFilter   && <span className="badge badge-yellow">Date: {dateFilter}</span>}
@@ -429,7 +440,7 @@ export default function AdminViewUserRecords({ userId, onBack, activeFilters = {
 
       {viewRecord   && <ViewRecordModal  record={viewRecord}   onClose={()=>setViewRecord(null)}/>}
       {deleteRecord && <AdminDeleteModal record={deleteRecord} onClose={()=>setDeleteRecord(null)} onDeleted={()=>{ setDeleteRecord(null); setRefresh(k=>k+1); }}/>}
-      {msgTarget    && <MessageModal     user={msgTarget}      relatedRecord={msgRecord} sendEmail={sendEmailFlag} onClose={()=>{ setMsgTarget(null); setMsgRecord(null); }}/>}
+      {msgTarget    && <MessageModal    user={msgTarget}      relatedRecord={msgRecord} sendEmail={sendEmailFlag} onClose={()=>{ setMsgTarget(null); setMsgRecord(null); }}/>}
 
       <style>{`
         @media (max-width: 600px) {

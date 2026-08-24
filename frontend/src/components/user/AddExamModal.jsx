@@ -251,21 +251,21 @@ export default function AddExamModal({ onClose, onSaved, onNextTrigger, editReco
         <div>
           <label style={lS}>University {rD}</label>
           <select name="university" value={basic.university} onChange={handleBasic} style={{ ...iB, appearance: 'auto' }}>
-            <option value="">Select</option>
+            <option value="" disabled hidden>Select</option>
             {UNIVERSITIES.map((u) => (<option key={u} value={u}>{u}</option>))}
           </select>
         </div>
         <div>
           <label style={lS}>Department {rD}</label>
           <select name="department" value={basic.department} onChange={handleBasic} style={{ ...iB, appearance: 'auto' }}>
-            <option value="">Select Department</option>
+            <option value="" disabled hidden>Select Department</option>
             {DEPARTMENTS.map((d) => (<option key={d} value={d}>{d}</option>))}
           </select>
         </div>
         <div>
           <label style={lS}>Exam Category {rD}</label>
           <select name="examCategory" value={basic.examCategory} onChange={handleBasic} style={{ ...iB, appearance: 'auto' }}>
-            <option value="">Select</option>
+            <option value="" disabled hidden>Select</option>
             {EXAM_CATS.map((c) => (<option key={c} value={c}>{c}</option>))}
           </select>
         </div>
@@ -276,7 +276,7 @@ export default function AddExamModal({ onClose, onSaved, onNextTrigger, editReco
         <div>
           <label style={lS}>Role {rD}</label>
           <select name="role" value={basic.role} onChange={handleBasic} style={{ ...iB, appearance: 'auto' }}>
-            <option value="">Select</option>
+            <option value="" disabled hidden>Select</option>
             {ROLES.map((r) => (<option key={r} value={r}>{r}</option>))}
           </select>
         </div>
@@ -297,7 +297,7 @@ export default function AddExamModal({ onClose, onSaved, onNextTrigger, editReco
               <option value="N/A">N/A — Not Required for Other role</option>
             ) : (
               <>
-                <option value="">Select Room</option>
+                <option value="" disabled hidden>Select Room</option>
                 {ROOMS.map((r) => (<option key={r} value={r}>{r}</option>))}
               </>
             )}

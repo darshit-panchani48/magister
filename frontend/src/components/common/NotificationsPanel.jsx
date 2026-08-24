@@ -1,4 +1,4 @@
-// src/components/common/NotificationsPanel.jsx — Universal Mark Read for All Sections
+// src/components/common/NotificationsPanel.jsx — Fixed Message Deletion
 
 import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
@@ -7,7 +7,7 @@ import api from '../../services/api';
 import toast from 'react-hot-toast';
 
 const NOTIF_CFG = {
-  RECORD_ADDED:           { icon: 'ti-plus',    bg: 'var(--primary-light)',  color: 'var(--primary-text)', tag: 'Added' },
+  RECORD_ADDED:         { icon: 'ti-plus',    bg: 'var(--primary-light)',  color: 'var(--primary-text)', tag: 'Added' },
   RECORD_UPDATED:         { icon: 'ti-edit',    bg: 'var(--warning-light)',  color: 'var(--warning-text)', tag: 'Updated' },
   RECORD_DELETED_BY_USER: { icon: 'ti-trash',   bg: 'var(--danger-light)',   color: 'var(--danger-text)',  tag: 'Deleted' },
   RECORD_DELETED_BY_ADMIN:{ icon: 'ti-trash-x', bg: 'var(--danger-light)',   color: 'var(--danger-text)',  tag: 'Deleted' },
@@ -103,17 +103,13 @@ export default function NotificationsPanel({ onClose }) {
   };
   const current = listMap[tab] || [];
 
-  // Total unread items across all sections to control "Mark read" button visibility
   const totalUnreadAll = unreadCount + msgUnreadCount;
 
-  // 🌟 Universal Mark All Read function for Notifications & Messages simultaneously
   const handleMarkAllRead = async () => {
     try {
-      // 1. Mark all notifications as read
       if (unreadCount > 0) {
         await markAllAsRead();
       }
-      // 2. Mark all unread messages as read
       const unreadMsgs = messages.filter((m) => !m.isRead);
       if (unreadMsgs.length > 0) {
         await Promise.all(unreadMsgs.map((m) => api.put(`/messages/${m._id}/read`)));
@@ -148,8 +144,8 @@ export default function NotificationsPanel({ onClose }) {
     try {
       const ids = [...selected];
       if (tab === 'Messages') {
-        await Promise.all(ids.map((id) => api.put(`/messages/${id}/read`)));
-        toast.success('Messages cleared');
+        await Promise.all(ids.map((id) => api.delete(`/messages/${id}`)));
+        toast.success(`Message${ids.length > 1 ? 's' : ''} deleted successfully`);
         fetchMessages?.();
       } else {
         await Promise.all(ids.map((id) => api.delete(`/notifications/${id}`)));

@@ -326,7 +326,7 @@ export default function ProfileModal({ profile, onClose, onSaved }) {
                       name="teacherId"
                       value={form.teacherId}
                       onChange={handleChange}
-                      placeholder="ASSC/2024/001"
+                      placeholder="Enter Id"
                       disabled={loading}
                     />
                   </div>
@@ -378,7 +378,7 @@ export default function ProfileModal({ profile, onClose, onSaved }) {
                   onChange={handleChange}
                   disabled={loading}
                 >
-                  <option value="">Select</option>
+                  <option value="" disabled hidden>Select Designation</option>
                   {DESIGNATIONS.map((d) => (
                     <option key={d} value={d}>
                       {d}
@@ -395,7 +395,7 @@ export default function ProfileModal({ profile, onClose, onSaved }) {
                   onChange={handleChange}
                   disabled={loading}
                 >
-                  <option value="">Select</option>
+                  <option value="" disabled hidden>Select Department </option>
                   {DEPARTMENTS.map((d) => (
                     <option key={d} value={d}>
                       {d}

@@ -1,4 +1,4 @@
-// controllers/examController.js — Complete & Fixed
+// controllers/examController.js — Complete & Fixed with General/Lab Duty Room Search Support
 
 const ExamRecord = require('../models/ExamRecord');
 const Notification = require('../models/Notification');
@@ -81,15 +81,25 @@ const getMyExams = async (req, res, next) => {
           { university: rx }, { department: rx }, { examCategory: rx },
           { role: rx }, { block: rx }, { room: rx },
           { 'examDetails.examName': rx }, { 'examDetails.subject': rx },
-          { 'labDuty.labName': rx }, { 'labDuty.examName': rx },
-          { 'generalDuty.location': rx }, { 'generalDuty.roleType': rx },
+          { 'labDuty.labName': rx }, { 'labDuty.labNumber': rx }, { 'labDuty.examName': rx },
+          { 'generalDuty.location': rx }, { 'generalDuty.locations': rx }, { 'generalDuty.otherLocation': rx }, { 'generalDuty.roleType': rx },
         ];
       } else if (field === 'university')   { query.university   = rx; }
       else if   (field === 'department')   { query.department   = rx; }
       else if   (field === 'examCategory') { query.examCategory = rx; }
       else if   (field === 'role')         { query.role         = rx; }
       else if   (field === 'block')        { query.block        = rx; }
-      else if   (field === 'room')         { query.room         = rx; }
+      // 🌟 UPDATED: Room search field will now look into standard rooms, lab rooms, and general duty locations
+      else if   (field === 'room') {
+        query.$or = [
+          { room: rx },
+          { 'labDuty.labName': rx },
+          { 'labDuty.labNumber': rx },
+          { 'generalDuty.location': rx },
+          { 'generalDuty.locations': rx },
+          { 'generalDuty.otherLocation': rx }
+        ];
+      }
       else if   (field === 'examName')     { query['examDetails.examName'] = rx; }
       else if   (field === 'subject')      { query['examDetails.subject']  = rx; }
     }
@@ -115,7 +125,7 @@ const getMyExams = async (req, res, next) => {
     const totalExams = allCompleted.length;
     const totalHours = calcTotalHours(allCompleted);
 
-    const now           = new Date();
+    const now             = new Date();
     const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const thisMonth      = allCompleted.filter(r => new Date(r.date) >= thisMonthStart);
