@@ -1,4 +1,4 @@
-// models/ExamRecord.js — Fixed conditional room requirement for general/other roles
+// models/ExamRecord.js — Updated with presentStudents and absentRollNos in both examDetail and labDuty schemas
 
 const mongoose = require('mongoose');
 
@@ -17,6 +17,7 @@ const examDetailSchema = new mongoose.Schema({
   presentStudents:  { type: Number, default: 0 },
   absentStudents:   { type: Number, default: 0 },
   expelledStudents: { type: Number, default: 0 },
+  absentRollNos:    { type: String, trim: true, default: '' },
   startRollNo:      { type: String, trim: true, default: '' },
   endRollNo:        { type: String, trim: true, default: '' },
 }, { _id: false });
@@ -36,8 +37,10 @@ const labDutySchema = new mongoose.Schema({
   startRollNo:      { type: String, trim: true, default: '' },
   endRollNo:        { type: String, trim: true, default: '' },
   totalStudents:    { type: Number, default: 0 },
+  presentStudents:  { type: Number, default: 0 },
   absentStudents:   { type: Number, default: 0 },
   expelledStudents: { type: Number, default: 0 },
+  absentRollNos:    { type: String, trim: true, default: '' },
 }, { _id: false });
 
 const generalDutySchema = new mongoose.Schema({
@@ -63,7 +66,6 @@ const examRecordSchema = new mongoose.Schema({
   role:         { type: String, required: [true,'Role is required'], trim: true },
   block:        { type: String, required: [true,'Block is required'], trim: true },
   
-  // 🌟 FIXED ROOM REQUIREMENT CHECK
   room: { 
     type: String, 
     required: function() {
@@ -89,9 +91,9 @@ const examRecordSchema = new mongoose.Schema({
 examRecordSchema.index({ user: 1, isDeleted: 1 });
 examRecordSchema.index({ date: -1 });
 examRecordSchema.index({
-  university:             'text',
-  department:             'text',
-  examCategory:           'text',
+  university:              'text',
+  department:              'text',
+  examCategory:            'text',
   'examDetails.examName': 'text',
   'examDetails.subject':  'text',
 });

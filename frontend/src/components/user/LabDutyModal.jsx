@@ -1,4 +1,4 @@
-// src/components/user/LabDutyModal.jsx — Fully Responsive, Clean & Fixed with Safe Basic Info Sync
+// src/components/user/LabDutyModal.jsx — Fixed with proper value mapping for Present & Absent Roll Nos
 
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -25,7 +25,7 @@ const lS = { fontSize: 11, fontWeight: 600, color: 'var(--text-sub)', marginBott
 const rD = <span style={{ color: '#ef4444', marginLeft: 2 }}>*</span>;
 const iB = { width: '100%', padding: '9px 12px', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', fontSize: 13, background: 'var(--bg-input)', color: 'var(--text-main)', fontFamily: "'Inter',sans-serif", outline: 'none', boxSizing: 'border-box' };
 
-const INIT = { labName: '', floor: '', labNumber: '', year: 'FY', examName: '', semester: 'Sem 1', subject: '', examType: 'Regular', startTime: '', endTime: '', totalHours: '', startRollNo: '', endRollNo: '', totalStudents: '', absentStudents: '', expelledStudents: '' };
+const INIT = { labName: '', floor: '', labNumber: '', year: 'FY', examName: '', semester: 'Sem 1', subject: '', examType: 'Regular', startTime: '', endTime: '', totalHours: '', startRollNo: '', endRollNo: '', totalStudents: '', presentStudents: '', absentStudents: '', expelledStudents: '', absentRollNos: '' };
 
 const SH = ({ color, label, icon }) => (
   <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -38,7 +38,7 @@ const SH = ({ color, label, icon }) => (
 export default function LabDutyModal({ examBasic, onBack, onClose, onSaved, editRecord = null }) {
   const isEdit = !!editRecord;
   const [form,    setForm]    = useState(() => {
-    if (editRecord?.labDuty) return { ...INIT, ...editRecord.labDuty };
+    if (editRecord?.labDuty) return { ...INIT, ...editRecord.labDuty, absentRollNos: editRecord.labDuty.absentRollNos || '' };
     return INIT;
   });
   const [error,   setError]   = useState('');
@@ -62,6 +62,12 @@ export default function LabDutyModal({ examBasic, onBack, onClose, onSaved, edit
         const en = extractNum(name === 'endRollNo'   ? value.toUpperCase() : next.endRollNo);
         next.totalStudents = (sn !== null && en !== null && en >= sn) ? String(en - sn + 1) : '';
       }
+      
+      const tot = parseInt(next.totalStudents, 10) || 0;
+      const abs = parseInt(next.absentStudents, 10) || 0;
+      const exp = parseInt(next.expelledStudents, 10) || 0;
+      next.presentStudents = String(Math.max(0, tot - abs - exp));
+
       return next;
     });
   };
@@ -101,7 +107,14 @@ export default function LabDutyModal({ examBasic, onBack, onClose, onSaved, edit
         room: examBasic?.room || '',
       };
 
-      const labDuty = { ...form, totalStudents: parseInt(form.totalStudents, 10) || 0, absentStudents: parseInt(form.absentStudents, 10) || 0, expelledStudents: parseInt(form.expelledStudents, 10) || 0 };
+      const labDuty = { 
+        ...form, 
+        totalStudents: parseInt(form.totalStudents, 10) || 0, 
+        presentStudents: parseInt(form.presentStudents, 10) || 0,
+        absentStudents: parseInt(form.absentStudents, 10) || 0, 
+        expelledStudents: parseInt(form.expelledStudents, 10) || 0,
+        absentRollNos: form.absentRollNos || ''
+      };
       
       if (isEdit) {
         await examService.updateExam(editRecord._id, { ...cleanBasic, labDuty, status });
@@ -214,11 +227,18 @@ export default function LabDutyModal({ examBasic, onBack, onClose, onSaved, edit
               <div><label style={lS}>Start Roll No {rD}</label><input name="startRollNo" value={form.startRollNo} onChange={handle} placeholder="BCA001" style={{ ...iB, textTransform: 'uppercase' }} /></div>
               <div><label style={lS}>End Roll No {rD}</label><input name="endRollNo" value={form.endRollNo} onChange={handle} placeholder="BCA070" style={{ ...iB, textTransform: 'uppercase' }} /></div>
             </div>
-            <div className="lab-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px 12px' }}>
+            <div className="lab-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px 12px', marginBottom: 10 }}>
               <div><label style={lS}>Total (Auto)</label><input value={form.totalStudents || '0'} readOnly style={{ ...iB, background: 'var(--success-light)', color: 'var(--success-text)', borderColor: 'var(--success-border)', cursor: 'default', fontWeight: 600 }} /></div>
               <div><label style={lS}>Absent</label><input type="number" min="0" name="absentStudents" value={form.absentStudents} onChange={handle} placeholder="0" style={{ ...iB, borderColor: overCount ? 'var(--danger-border)' : 'var(--border)' }} /></div>
               <div><label style={lS}>Expelled</label><input type="number" min="0" name="expelledStudents" value={form.expelledStudents} onChange={handle} placeholder="0" style={{ ...iB, borderColor: overCount ? 'var(--danger-border)' : 'var(--border)' }} /></div>
+              <div><label style={lS}>Present (Auto)</label><input value={form.presentStudents || '0'} readOnly style={{ ...iB, background: 'var(--success-light)', color: 'var(--success-text)', borderColor: 'var(--success-border)', cursor: 'default', fontWeight: 600 }} /></div>
             </div>
+
+            <div style={{ marginTop: 10 }}>
+              <label style={lS}>Absent Student Roll Numbers</label>
+              <input name="absentRollNos" value={form.absentRollNos || ''} onChange={handle} placeholder="e.g. BCA005, BCA012" style={iB} />
+            </div>
+
             {overCount && (
               <div style={{ marginTop: 8, padding: '7px 10px', background: 'var(--danger-light)', border: '1px solid var(--danger-border)', borderRadius: 8, fontSize: 11, color: 'var(--danger-text)', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <i className="ti ti-alert-circle" />Absent+Expelled ({abs + exp}) cannot exceed Total ({tot})
@@ -245,6 +265,7 @@ export default function LabDutyModal({ examBasic, onBack, onClose, onSaved, edit
           .lab-modal-card { max-width: 95% !important; max-height: 90vh !important; }
           .lab-grid-3 { grid-template-columns: 1fr !important; gap: 10px !important; }
           .lab-grid-2 { grid-template-columns: 1fr !important; gap: 10px !important; }
+          .lab-grid-4 { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
           .lab-footer-row { flex-direction: column-reverse !important; }
           .lab-footer-row button { width: 100% !important; justify-content: center !important; }
         }

@@ -1,4 +1,4 @@
-// src/components/user/AddExamModal.jsx — Updated with "Xh Ym" exact duration formatting
+// src/components/user/AddExamModal.jsx — Complete with Instructions, Present Field, Absent Roll Nos & Thick Borders
 
 import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
@@ -26,7 +26,6 @@ const toMins = (t) => {
   return h * 60 + m;
 };
 
-// 🌟 Updated to return exact "Xh Ym" format (e.g., "3h 30m", "1h", "45m")
 const minsToDuration = (mins) => {
   if (!mins || mins <= 0) return '';
   const h = Math.floor(mins / 60);
@@ -42,7 +41,7 @@ const extractNum = (roll) => {
 };
 
 const emptyYearDetail = (year) => ({
-  year, semester: DEFAULT_SEM[year], examName: '', subject: '', examType: 'Regular', examNature: 'Offline', medium: 'English', duration: '', fromTime: '', toTime: '', totalStudents: '', presentStudents: '', absentStudents: '', expelledStudents: '', startRollNo: '', endRollNo: '',
+  year, semester: DEFAULT_SEM[year], examName: '', subject: '', examType: 'Regular', examNature: 'Offline', medium: 'English', duration: '', fromTime: '', toTime: '', totalStudents: '', presentStudents: '', absentStudents: '', expelledStudents: '', absentRollNos: '', startRollNo: '', endRollNo: '',
 });
 
 const INIT_BASIC = { university: '', department: '', examCategory: '', date: '', role: '', block: '', room: '' };
@@ -87,6 +86,7 @@ export default function AddExamModal({ onClose, onSaved, onNextTrigger, editReco
         fromTime: d.fromTime || '', toTime: d.toTime || '',
         totalStudents: String(d.totalStudents || ''), presentStudents: String(d.presentStudents || ''),
         absentStudents: String(d.absentStudents || ''), expelledStudents: String(d.expelledStudents || ''),
+        absentRollNos: d.absentRollNos || '',
       }));
       setActiveYears(filled.map((d) => d.year));
       setDetails(YEARS.map((y) => filled.find((d) => d.year === y) || emptyYearDetail(y)));
@@ -401,16 +401,20 @@ export default function AddExamModal({ onClose, onSaved, onNextTrigger, editReco
                   <input type="number" min="0" value={d.totalStudents} onChange={(e) => handleDetail(idx, 'totalStudents', e.target.value)} placeholder="0" style={{ ...iB, fontSize: 12 }} />
                 </div>
                 <div>
-                  <label style={{ ...lS, fontSize: 10 }}>Present Students</label>
-                  <input value={d.presentStudents || '0'} readOnly style={{ ...iB, fontSize: 12, background: 'var(--success-light)', color: 'var(--success-text)', borderColor: 'var(--success-border)', cursor: 'default' }} />
-                </div>
-                <div>
                   <label style={{ ...lS, fontSize: 10 }}>Absent Students</label>
                   <input type="number" min="0" value={d.absentStudents} onChange={(e) => handleDetail(idx, 'absentStudents', e.target.value)} placeholder="0" style={{ ...iB, fontSize: 12 }} />
                 </div>
                 <div>
                   <label style={{ ...lS, fontSize: 10 }}>Expelled Students</label>
                   <input type="number" min="0" value={d.expelledStudents} onChange={(e) => handleDetail(idx, 'expelledStudents', e.target.value)} placeholder="0" style={{ ...iB, fontSize: 12 }} />
+                </div>
+                <div>
+                  <label style={{ ...lS, fontSize: 10 }}>Present Students (Auto)</label>
+                  <input value={d.presentStudents || '0'} readOnly style={{ ...iB, fontSize: 12, background: 'var(--success-light)', color: 'var(--success-text)', borderColor: 'var(--success-border)', cursor: 'default' }} />
+                </div>
+                <div>
+                  <label style={{ ...lS, fontSize: 10 }}>Absent Student Roll Numbers</label>
+                  <input value={d.absentRollNos || ''} onChange={(e) => handleDetail(idx, 'absentRollNos', e.target.value)} placeholder="e.g. BCA005, BCA012" style={{ ...iB, fontSize: 12 }} />
                 </div>
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8 }} />
                 <div>
@@ -437,7 +441,7 @@ export default function AddExamModal({ onClose, onSaved, onNextTrigger, editReco
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 6000, background: 'rgba(0,0,0,.55)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', overflowY: 'auto' }}>
-      <div className="ae-modal-card" style={{ background: 'var(--bg-card)', borderRadius: 20, width: '100%', maxWidth: step === 1 ? 640 : 1100, maxHeight: 'calc(100vh - 32px)', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 80px rgba(0,0,0,.25)', border: '1px solid var(--border)', overflow: 'hidden', animation: 'scaleIn .3s ease' }}>
+      <div className="ae-modal-card" style={{ background: 'var(--bg-card)', borderRadius: 20, width: '100%', maxWidth: step === 1 ? 640 : 1100, maxHeight: 'calc(100vh - 32px)', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 80px rgba(0,0,0,.25)', border: '2px solid var(--border)', overflow: 'hidden', animation: 'scaleIn .3s ease' }}>
         
         {/* Header */}
         <div style={{ padding: '18px 20px 14px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
@@ -518,7 +522,7 @@ export default function AddExamModal({ onClose, onSaved, onNextTrigger, editReco
       {/* Instruction Modal */}
       {showInstructionModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(5px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: 'var(--bg-card)', width: '100%', maxWidth: 600, borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.25)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ background: 'var(--bg-card)', width: '100%', maxWidth: 600, borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.25)', border: '2px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
             <div style={{ background: 'var(--primary)', color: '#fff', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <i className="ti ti-info-circle" style={{ fontSize: 18 }} /> Complete Exam Duty Instruction & Guide

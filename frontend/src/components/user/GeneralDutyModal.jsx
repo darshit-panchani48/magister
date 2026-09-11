@@ -1,11 +1,11 @@
-// src/components/user/GeneralDutyModal.jsx — Fully Responsive, Clean & Fixed
+// src/components/user/GeneralDutyModal.jsx — Fully Responsive, Clean & Fixed with 'ALL' location disable logic
 
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import examService from '../../services/examService';
 
 const LOCATIONS = [
-  'G1','G4','F1','S1','S2','S3','S4','S5','S8','T1','T4','T5',
+  'ALL','G1','G4','F1','S1','S2','S3','S4','S5','S8','T1','T4','T5',
   'COMPUTER LAB-1','COMPUTER LAB-2','BOTANY LAB','MICRO LAB',
   'CHEMISTRY LAB-1','CHEMISTRY LAB-2','CHEMISTRY LAB-3','PHYSICS LAB',
   'STRONG ROOM','STAFF ROOM','Other',
@@ -95,11 +95,27 @@ export default function GeneralDutyModal({ examBasic, onBack, onClose, onSaved, 
 
   const toggleLocation = (loc) => {
     setError('');
-    if (loc === 'Other') {
-      setForm(p => ({ ...p, locations: p.locations.includes('Other') ? p.locations.filter(l => l !== 'Other') : [...p.locations, 'Other'] }));
-    } else {
-      setForm(p => ({ ...p, locations: p.locations.includes(loc) ? p.locations.filter(l => l !== loc) : [...p.locations, loc] }));
-    }
+    setForm(p => {
+      if (loc === 'ALL') {
+        // If ALL is clicked, select only ALL and clear others
+        return { ...p, locations: p.locations.includes('ALL') ? [] : ['ALL'], otherLocation: '' };
+      } else {
+        // If any other location is clicked, remove ALL first if present
+        const cleanLocs = p.locations.filter(l => l !== 'ALL');
+        if (loc === 'Other') {
+          return {
+            ...p,
+            locations: cleanLocs.includes('Other') ? cleanLocs.filter(l => l !== 'Other') : [...cleanLocs, 'Other'],
+            otherLocation: cleanLocs.includes('Other') ? '' : p.otherLocation
+          };
+        } else {
+          return {
+            ...p,
+            locations: cleanLocs.includes(loc) ? cleanLocs.filter(l => l !== loc) : [...cleanLocs, loc]
+          };
+        }
+      }
+    });
   };
 
   const toggleWork = (item) => {
@@ -124,8 +140,8 @@ export default function GeneralDutyModal({ examBasic, onBack, onClose, onSaved, 
     setLoading(true);
     try {
       const cleanBasic = {
-        university:   examBasic?.university   || editRecord?.university   || '',
-        department:   examBasic?.department   || editRecord?.department   || '',
+        university:  examBasic?.university  || editRecord?.university  || '',
+        department:  examBasic?.department  || editRecord?.department  || '',
         examCategory: examBasic?.examCategory || editRecord?.examCategory || '',
         date:         examBasic?.date         || (editRecord?.date ? new Date(editRecord.date).toISOString().split('T')[0] : ''),
         role:         examBasic?.role         || editRecord?.role         || 'Other',
@@ -161,6 +177,7 @@ export default function GeneralDutyModal({ examBasic, onBack, onClose, onSaved, 
   };
 
   const items = form.roleType ? (WORK_ITEMS[form.roleType] || []) : [];
+  const isAllSelected = form.locations.includes('ALL');
   const hasOtherLoc = form.locations.includes('Other');
 
   return (
@@ -222,19 +239,20 @@ export default function GeneralDutyModal({ examBasic, onBack, onClose, onSaved, 
               <div className="gen-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px 12px' }}>
                 {LOCATIONS.filter(l => l !== 'Other').map(loc => {
                   const checked = form.locations.includes(loc);
+                  const isDisabled = isAllSelected && loc !== 'ALL';
                   return (
-                    <label key={loc} style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 12, color: checked ? 'var(--text-main)' : 'var(--text-sub)', fontWeight: checked ? 600 : 400 }}>
-                      <input type="checkbox" checked={checked} onChange={() => toggleLocation(loc)} style={{ width: 14, height: 14, accentColor: 'var(--primary)', cursor: 'pointer', flexShrink: 0 }} />
+                    <label key={loc} style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: isDisabled ? 'not-allowed' : 'pointer', fontSize: 12, color: isDisabled ? 'var(--text-muted)' : checked ? 'var(--text-main)' : 'var(--text-sub)', fontWeight: checked ? 600 : 400, opacity: isDisabled ? 0.5 : 1 }}>
+                      <input type="checkbox" checked={checked} disabled={isDisabled} onChange={() => toggleLocation(loc)} style={{ width: 14, height: 14, accentColor: 'var(--primary)', cursor: isDisabled ? 'not-allowed' : 'pointer', flexShrink: 0 }} />
                       {loc}
                     </label>
                   );
                 })}
-                <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 12, color: hasOtherLoc ? 'var(--text-main)' : 'var(--text-sub)', fontWeight: hasOtherLoc ? 600 : 400 }}>
-                  <input type="checkbox" checked={hasOtherLoc} onChange={() => toggleLocation('Other')} style={{ width: 14, height: 14, accentColor: 'var(--primary)', cursor: 'pointer', flexShrink: 0 }} />
+                <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: isAllSelected ? 'not-allowed' : 'pointer', fontSize: 12, color: isAllSelected ? 'var(--text-muted)' : hasOtherLoc ? 'var(--text-main)' : 'var(--text-sub)', fontWeight: hasOtherLoc ? 600 : 400, opacity: isAllSelected ? 0.5 : 1 }}>
+                  <input type="checkbox" checked={hasOtherLoc} disabled={isAllSelected} onChange={() => toggleLocation('Other')} style={{ width: 14, height: 14, accentColor: 'var(--primary)', cursor: isAllSelected ? 'not-allowed' : 'pointer', flexShrink: 0 }} />
                   Other
                 </label>
               </div>
-              {hasOtherLoc && (
+              {hasOtherLoc && !isAllSelected && (
                 <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
                   <label style={lS}>Other Location Name {rD}</label>
                   <input name="otherLocation" value={form.otherLocation} onChange={handle} placeholder="Enter location name" style={iB} />

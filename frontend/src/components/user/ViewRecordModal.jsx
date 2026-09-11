@@ -1,4 +1,4 @@
-// src/components/user/ViewRecordModal.jsx — Complete, Responsive & Side-by-Side Year Cards
+// src/components/user/ViewRecordModal.jsx — Complete with proper mapping for Present & Absent Roll Nos in both Lab & Year-wise Exam Details
 
 import React, { useEffect } from 'react';
 import { format } from 'date-fns';
@@ -68,7 +68,6 @@ export default function ViewRecordModal({ record, onClose }) {
   if (!record) return null;
   const rType = record.recordType || 'exam';
 
-  // Helper to format general duty locations nicely
   const getLocationsStr = () => {
     const gd = record.generalDuty;
     if (!gd) return '—';
@@ -120,7 +119,7 @@ export default function ViewRecordModal({ record, onClose }) {
         {/* Scrollable Content Body */}
         <div style={{ padding: '24px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
 
-          {/* Basic Info — ALL types */}
+          {/* Basic Info */}
           <div style={{ background: 'var(--bg-page)', border: '1px solid var(--border)', borderRadius: 14, padding: '18px 22px' }}>
             <SH color="var(--primary)" label="Basic Information" icon="ti-info-circle" />
             <div className="vrm-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 20px' }}>
@@ -179,9 +178,11 @@ export default function ViewRecordModal({ record, onClose }) {
                   <SH color="var(--warning)" label="Student Details" icon="ti-users" />
                   <Field label="Start Roll No"   value={record.labDuty.startRollNo} />
                   <Field label="End Roll No"     value={record.labDuty.endRollNo} />
-                  <Field label="Total Students"  value={String(record.labDuty.totalStudents   || 0)} color="var(--success)" />
+                  <Field label="Total Students"  value={String(record.labDuty.totalStudents  || 0)} color="var(--success)" />
+                  <Field label="Present"         value={String(record.labDuty.presentStudents || 0)} color="var(--success)" />
                   <Field label="Absent"          value={String(record.labDuty.absentStudents  || 0)} color="var(--warning)" />
                   <Field label="Expelled"        value={String(record.labDuty.expelledStudents|| 0)} color="var(--danger)" />
+                  <Field label="Absent Roll Nos" value={record.labDuty.absentRollNos} color="var(--text-main)" />
                 </div>
               </div>
             </div>
@@ -193,8 +194,8 @@ export default function ViewRecordModal({ record, onClose }) {
               <div className="vrm-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div style={{ background: 'var(--pro-light)', border: '1px solid var(--pro-border)', borderRadius: 14, padding: '18px 22px' }}>
                   <SH color="var(--pro)" label="Duty Timing" icon="ti-clock" />
-                  <Field label="Start Time"        value={fmtTime(record.generalDuty.startTime)} />
-                  <Field label="End Time"          value={fmtTime(record.generalDuty.endTime)} />
+                  <Field label="Start Time"         value={fmtTime(record.generalDuty.startTime)} />
+                  <Field label="End Time"           value={fmtTime(record.generalDuty.endTime)} />
                   <Field label="Total Duty Hours" value={record.generalDuty.totalDutyHours} color="var(--pro)" />
                 </div>
                 <div style={{ background: 'var(--primary-light)', border: '1px solid var(--primary-border)', borderRadius: 14, padding: '18px 22px' }}>
@@ -231,7 +232,7 @@ export default function ViewRecordModal({ record, onClose }) {
             </div>
           )}
 
-          {/* EXAM year-wise (🌟 Side-by-Side Grid with Auto Responsive Stack) */}
+          {/* EXAM year-wise */}
           {rType === 'exam' && record.examDetails?.length > 0 && (
             <div>
               <SH color="var(--primary)" label="Year-wise Exam Details" icon="ti-calendar" />
@@ -272,6 +273,12 @@ export default function ViewRecordModal({ record, onClose }) {
                               <span style={{ fontSize: 13, fontWeight: 700, color: s.c }}>{s.v ?? '—'}</span>
                             </div>
                           ))}
+                        </div>
+                        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, marginTop: 6 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Absent Roll Nos</span>
+                            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-main)', textAlign: 'right' }}>{d.absentRollNos || '—'}</span>
+                          </div>
                         </div>
                         <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, marginTop: 6 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
