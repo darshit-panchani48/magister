@@ -113,27 +113,27 @@ const HoursModal = ({ records, totalHoursStr, onClose }) => {
 
   return (
     <div style={{ position:'fixed', inset:0, zIndex:7000, background:'rgba(0,0,0,.5)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
-      <div className="ps-modal-card" style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:560, maxHeight:'85vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.2)', border:'1px solid #e5e7eb', animation:'scaleIn .35s ease', overflow:'hidden' }}>
-        <div style={{ padding:'18px 22px 14px', borderBottom:'1px solid #f3f4f6', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
+      <div className="ps-modal-card" style={{ background:'var(--bg-card, #fff)', color:'var(--text-main, #111827)', borderRadius:20, width:'100%', maxWidth:560, maxHeight:'85vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.2)', border:'1px solid var(--border, #e5e7eb)', animation:'scaleIn .35s ease', overflow:'hidden' }}>
+        <div style={{ padding:'18px 22px 14px', borderBottom:'1px solid var(--border, #f3f4f6)', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
           <div>
-            <div style={{ fontSize:17, fontWeight:700, color:'#111827', display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{ fontSize:17, fontWeight:700, color:'var(--text-main, #111827)', display:'flex', alignItems:'center', gap:8 }}>
               <span style={{ width:32, height:32, borderRadius:9, background:'#ede9fe', display:'inline-flex', alignItems:'center', justifyContent:'center', fontSize:15, color:'#7c3aed' }}>
                 <i className="ti ti-clock"/>
               </span>
               Hours Breakdown
             </div>
-            <div style={{ fontSize:12, color:'#6b7280', marginTop:3 }}>
+            <div style={{ fontSize:12, color:'var(--text-muted, #6b7280)', marginTop:3 }}>
               Total: <strong style={{ color:'#7c3aed' }}>{totalHoursStr}</strong> across {sortedRecords.length} duty record{sortedRecords.length!==1?'s':''}
             </div>
           </div>
-          <button onClick={onClose} style={{ width:32, height:32, borderRadius:8, border:'1px solid #e5e7eb', background:'#f9fafb', color:'#6b7280', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:15, flexShrink:0 }}>
+          <button onClick={onClose} style={{ width:32, height:32, borderRadius:8, border:'1px solid var(--border, #e5e7eb)', background:'var(--bg-page, #f9fafb)', color:'var(--text-muted, #6b7280)', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:15, flexShrink:0 }}>
             <i className="ti ti-x"/>
           </button>
         </div>
 
         <div style={{ flex:1, overflowY:'auto', padding:'14px 22px' }}>
           {sortedRecords.length === 0 ? (
-            <div style={{ textAlign:'center', padding:'40px 0', color:'#9ca3af' }}>No completed records yet</div>
+            <div style={{ textAlign:'center', padding:'40px 0', color:'var(--text-muted, #9ca3af)' }}>No completed records yet</div>
           ) : sortedRecords.map((rec) => {
             const { mins, startStr, endStr } = calcRecordDetails(rec);
             const hoursStr = formatHours(mins);
@@ -141,22 +141,22 @@ const HoursModal = ({ records, totalHoursStr, onClose }) => {
             const title = rec.recordType === 'lab' ? (rec.labDuty?.labName || rec.university) : rec.recordType === 'general' ? (rec.generalDuty?.location || rec.university) : rec.university;
 
             return (
-              <div key={rec._id} style={{ marginBottom:16, padding:'12px 14px', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:12 }}>
+              <div key={rec._id} style={{ marginBottom:16, padding:'12px 14px', background:'var(--bg-page, #f9fafb)', border:'1px solid var(--border, #e5e7eb)', borderRadius:12 }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4, flexWrap:'wrap', gap:6 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                     <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:20, background: rec.recordType==='lab'?'#d1fae5':rec.recordType==='general'?'#ede9fe':'#dbeafe', color: rec.recordType==='lab'?'#065f46':rec.recordType==='general'?'#6d28d9':'#1e40af' }}>
                       {dutyType}
                     </span>
-                    <span style={{ fontSize:12, fontWeight:600, color:'#374151' }}>{safeDate(rec.date)}</span>
+                    <span style={{ fontSize:12, fontWeight:600, color:'var(--text-sub, #374151)' }}>{safeDate(rec.date)}</span>
                   </div>
                   <div style={{ fontSize:14, fontWeight:700, color:'#7c3aed' }}>{hoursStr}</div>
                 </div>
-                <div style={{ fontSize:12, color:'#4b5563', fontWeight:600, marginBottom:4 }}>{title} — {rec.examCategory}</div>
-                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', fontSize:11, color:'#6b7280', marginBottom:6, flexWrap:'wrap' }}>
+                <div style={{ fontSize:12, color:'var(--text-sub, #4b5563)', fontWeight:600, marginBottom:4 }}>{title} — {rec.examCategory}</div>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', fontSize:11, color:'var(--text-muted, #6b7280)', marginBottom:6, flexWrap:'wrap' }}>
                   <span>Role: {rec.role}</span>
                   <span>{startStr} – {endStr}</span>
                 </div>
-                <div style={{ height:6, background:'#e5e7eb', borderRadius:3, overflow:'hidden' }}>
+                <div style={{ height:6, background:'var(--border, #e5e7eb)', borderRadius:3, overflow:'hidden' }}>
                   <div style={{ height:'100%', width:`${(mins/maxM)*100}%`, background:'linear-gradient(90deg,#7c3aed,#a855f7)', borderRadius:3 }}/>
                 </div>
               </div>
@@ -164,8 +164,8 @@ const HoursModal = ({ records, totalHoursStr, onClose }) => {
           })}
         </div>
 
-        <div style={{ padding:'14px 22px', borderTop:'1px solid #f3f4f6', background:'#f9fafb', flexShrink:0 }}>
-          <button onClick={onClose} style={{ width:'100%', padding:'10px 0', border:'1.5px solid #e5e7eb', background:'#fff', color:'#374151', borderRadius:10, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+        <div style={{ padding:'14px 22px', borderTop:'1px solid var(--border, #f3f4f6)', background:'var(--bg-page, #f9fafb)', flexShrink:0 }}>
+          <button onClick={onClose} style={{ width:'100%', padding:'10px 0', border:'1.5px solid var(--border, #e5e7eb)', background:'var(--bg-card, #fff)', color:'var(--text-sub, #374151)', borderRadius:10, fontSize:13, fontWeight:500, cursor:'pointer' }}>
             Close
           </button>
         </div>
@@ -186,37 +186,37 @@ const ExamsModal = ({ records, totalExams, onClose }) => {
 
   return (
     <div style={{ position:'fixed', inset:0, zIndex:7000, background:'rgba(0,0,0,.5)', backdropFilter:'blur(12px)', display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
-      <div className="ps-modal-card" style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:620, maxHeight:'85vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.2)', border:'1px solid #e5e7eb', animation:'scaleIn .35s ease', overflow:'hidden' }}>
-        <div style={{ padding:'18px 22px 14px', borderBottom:'1px solid #f3f4f6', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
+      <div className="ps-modal-card" style={{ background:'var(--bg-card, #fff)', color:'var(--text-main, #111827)', borderRadius:20, width:'100%', maxWidth:620, maxHeight:'85vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.2)', border:'1px solid var(--border, #e5e7eb)', animation:'scaleIn .35s ease', overflow:'hidden' }}>
+        <div style={{ padding:'18px 22px 14px', borderBottom:'1px solid var(--border, #f3f4f6)', display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
           <div>
-            <div style={{ fontSize:17, fontWeight:700, color:'#111827', display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{ fontSize:17, fontWeight:700, color:'var(--text-main, #111827)', display:'flex', alignItems:'center', gap:8 }}>
               <span style={{ width:32, height:32, borderRadius:9, background:'#dbeafe', display:'inline-flex', alignItems:'center', justifyContent:'center', fontSize:15, color:'#2563eb' }}>
                 <i className="ti ti-clipboard-list"/>
               </span>
               Completed Duty Records
             </div>
-            <div style={{ fontSize:12, color:'#6b7280', marginTop:3 }}>
+            <div style={{ fontSize:12, color:'var(--text-muted, #6b7280)', marginTop:3 }}>
               Total: <strong style={{ color:'#2563eb' }}>{totalExams}</strong> submitted record{totalExams!==1?'s':''}
             </div>
           </div>
-          <button onClick={onClose} style={{ width:32, height:32, borderRadius:8, border:'1px solid #e5e7eb', background:'#f9fafb', color:'#6b7280', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:15, flexShrink:0 }}>
+          <button onClick={onClose} style={{ width:32, height:32, borderRadius:8, border:'1px solid var(--border, #e5e7eb)', background:'var(--bg-page, #f9fafb)', color:'var(--text-muted, #6b7280)', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:15, flexShrink:0 }}>
             <i className="ti ti-x"/>
           </button>
         </div>
 
         <div style={{ flex:1, overflowY:'auto', padding:'14px 22px' }}>
           {completed.length === 0 ? (
-            <div style={{ textAlign:'center', padding:'40px 0', color:'#9ca3af' }}>No completed records yet</div>
+            <div style={{ textAlign:'center', padding:'40px 0', color:'var(--text-muted, #9ca3af)' }}>No completed records yet</div>
           ) : completed.map((rec, i) => {
             const { mins } = calcRecordDetails(rec);
             const hStr = formatHours(mins);
             const title = rec.recordType === 'lab' ? (rec.labDuty?.labName || rec.university) : rec.recordType === 'general' ? (rec.generalDuty?.location || rec.university) : rec.university;
             return (
-              <div key={rec._id} style={{ display:'flex', gap:14, padding:'12px 14px', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:12, marginBottom:10 }}>
+              <div key={rec._id} style={{ display:'flex', gap:14, padding:'12px 14px', background:'var(--bg-page, #f9fafb)', border:'1px solid var(--border, #e5e7eb)', borderRadius:12, marginBottom:10 }}>
                 <div style={{ width:24, height:24, borderRadius:'50%', background:'#dbeafe', color:'#1e40af', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:700, flexShrink:0, marginTop:2 }}>{i+1}</div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:'flex', justifyContent:'space-between', flexWrap:'wrap', gap:6, marginBottom:6 }}>
-                    <div style={{ fontWeight:700, color:'#111827', fontSize:13 }}>{title} — {rec.examCategory}</div>
+                    <div style={{ fontWeight:700, color:'var(--text-main, #111827)', fontSize:13 }}>{title} — {rec.examCategory}</div>
                     <span style={{ background:'#d1fae5', color:'#065f46', fontSize:10, fontWeight:700, padding:'2px 9px', borderRadius:20 }}>Completed</span>
                   </div>
                   <div style={{ display:'flex', gap:10, flexWrap:'wrap', fontSize:11 }}>
@@ -227,7 +227,7 @@ const ExamsModal = ({ records, totalExams, onClose }) => {
                       { icon:'ti-door',      val: rec.room  ? `Room ${rec.room}`  : null },
                       { icon:'ti-clock',     val: hStr, color:'#7c3aed' },
                     ].filter(r=>r.val).map(r=>(
-                      <span key={r.icon} style={{ display:'inline-flex', alignItems:'center', gap:4, color:r.color||'#6b7280' }}>
+                      <span key={r.icon} style={{ display:'inline-flex', alignItems:'center', gap:4, color:r.color||'var(--text-muted, #6b7280)' }}>
                         <i className={`ti ${r.icon}`} style={{ fontSize:12 }}/>{r.val}
                       </span>
                     ))}
@@ -238,8 +238,8 @@ const ExamsModal = ({ records, totalExams, onClose }) => {
           })}
         </div>
 
-        <div style={{ padding:'14px 22px', borderTop:'1px solid #f3f4f6', background:'#f9fafb', flexShrink:0 }}>
-          <button onClick={onClose} style={{ width:'100%', padding:'10px 0', border:'1.5px solid #e5e7eb', background:'#fff', color:'#374151', borderRadius:10, fontSize:13, fontWeight:500, cursor:'pointer' }}>
+        <div style={{ padding:'14px 22px', borderTop:'1px solid var(--border, #f3f4f6)', background:'var(--bg-page, #f9fafb)', flexShrink:0 }}>
+          <button onClick={onClose} style={{ width:'100%', padding:'10px 0', border:'1.5px solid var(--border, #e5e7eb)', background:'var(--bg-card, #fff)', color:'var(--text-sub, #374151)', borderRadius:10, fontSize:13, fontWeight:500, cursor:'pointer' }}>
             Close
           </button>
         </div>
@@ -252,7 +252,7 @@ const DonutChart = ({ segments, size = 80, thickness = 12 }) => {
   const total = segments.reduce((s, seg) => s + seg.value, 0);
   if (!total) return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={size/2} cy={size/2} r={(size/2)-thickness/2} fill="none" stroke="#f3f4f6" strokeWidth={thickness}/>
+      <circle cx={size/2} cy={size/2} r={(size/2)-thickness/2} fill="none" stroke="var(--border, #f3f4f6)" strokeWidth={thickness}/>
     </svg>
   );
   const r = (size/2) - thickness/2;
@@ -354,7 +354,9 @@ export default function ProgressSection({ stats, records = [], onPdfClick }) {
   })();
 
   const cardStyle = (clickable) => ({
-    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    background: 'var(--bg-card)', 
+    border: '1px solid var(--border)',
+    color: 'var(--text-main)', // 🌟 Added proper text color for Dark mode support
     borderRadius: 14, padding: '16px 18px',
     boxShadow: '0 1px 4px rgba(0,0,0,.05)',
     cursor: clickable ? 'pointer' : 'default',
@@ -439,7 +441,7 @@ export default function ProgressSection({ stats, records = [], onPdfClick }) {
             <div style={{ fontSize:13, fontWeight:700, color:'var(--text-main)' }}>Status Breakdown</div>
             <div style={{ display:'flex', alignItems:'center', gap:20, flexWrap:'wrap' }}>
               <div style={{ position:'relative', flexShrink:0 }}>
-                <DonutChart segments={donutSegs.length?donutSegs:[{value:1,color:'#f3f4f6'}]} size={90} thickness={14}/>
+                <DonutChart segments={donutSegs.length?donutSegs:[{value:1,color:'var(--border)'}]} size={90} thickness={14}/>
                 <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column' }}>
                   <div style={{ fontSize:18, fontWeight:800, color:'var(--text-main)', lineHeight:1 }}>{records.length}</div>
                   <div style={{ fontSize:8, color:'var(--text-muted)', fontWeight:500, textTransform:'uppercase', letterSpacing:'.05em' }}>Total</div>
